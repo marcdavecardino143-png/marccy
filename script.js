@@ -12,20 +12,28 @@ const closeModal = modal.querySelector('.close');
 
 projects.forEach(proj => {
     proj.addEventListener('click', () => {
-        // Remove previous video if exists
-        const existingVideo = modal.querySelector('video');
-        if (existingVideo) existingVideo.remove();
+        // Remove any previous media in modal
+        const existingMedia = modal.querySelector('video, img');
+        if (existingMedia) existingMedia.remove();
 
-        // Show video if type="video"
         const type = proj.dataset.type;
+        const src = proj.dataset.src;
+
         if(type === 'video'){
             const video = document.createElement('video');
-            video.src = proj.dataset.src;
+            video.src = src;
             video.controls = true;
             video.autoplay = true;
             video.style.width = '100%';
             video.style.borderRadius = '10px';
             modal.querySelector('.modal-content').prepend(video);
+        } else if(type === 'image'){
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = proj.querySelector('p').innerText;
+            img.style.width = '100%';
+            img.style.borderRadius = '10px';
+            modal.querySelector('.modal-content').prepend(img);
         }
 
         modalDesc.textContent = proj.dataset.desc;
@@ -34,22 +42,26 @@ projects.forEach(proj => {
 });
 
 closeModal.addEventListener('click', () => {
-    const video = modal.querySelector('video');
-    if(video){
-        video.pause();
-        video.currentTime = 0;
-        video.remove();
+    const media = modal.querySelector('video, img');
+    if(media){
+        if(media.tagName === 'VIDEO'){
+            media.pause();
+            media.currentTime = 0;
+        }
+        media.remove();
     }
     modal.style.display = 'none';
 });
 
 window.addEventListener('click', e => { 
     if(e.target == modal){
-        const video = modal.querySelector('video');
-        if(video){
-            video.pause();
-            video.currentTime = 0;
-            video.remove();
+        const media = modal.querySelector('video, img');
+        if(media){
+            if(media.tagName === 'VIDEO'){
+                media.pause();
+                media.currentTime = 0;
+            }
+            media.remove();
         }
         modal.style.display = 'none';
     }
